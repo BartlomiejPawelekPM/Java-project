@@ -1,0 +1,63 @@
+§1 Postanowienia Ogólne
+Niniejszy regulamin określa zasady korzystania z aplikacji "JBT Sound" (zwanej dalej "Aplikacją").
+Korzystanie z Aplikacji jest równoznaczne z akceptacją niniejszego regulaminu.
+Aplikacja umożliwia zarządzanie danymi dotyczącymi płyt, twórców, utworów oraz realizację transakcji zakupu i transferu treści cyfrowych.
+W przypadku braku pliku regulaminu, niniejsza wersja jest automatycznie przywracana.
+
+§2 Rejestracja i Logowanie
+Dostęp do Aplikacji wymaga rejestracji użytkownika poprzez ekran logowania.
+Pierwszy zarejestrowany użytkownik staje się administratorem systemu.
+Użytkownik ma obowiązek podania prawdziwych danych osobowych i adresowych, które będą przechowywane w bazie danych.
+Hasła użytkowników są zabezpieczane za pomocą podwójnego skrótu SHA1 (hash).
+Administrator ma prawo przyznawania i odbierania uprawnień administracyjnych innym użytkownikom, z wyjątkiem usunięcia pierwszego administratora.
+
+§3 Funkcjonalności Aplikacji
+Zarządzanie Treścią:
+a) Możliwość dodawania, edytowania i usuwania informacji o płytach, twórcach i utworach.
+b) Możliwość przypisywania utworów i twórców do płyt.
+c) Jeśli przypisano twórcę podczas dodawania utworów do płyty, wszystkie utwory automatycznie należą do tego twórcy.
+Sklep:
+a) Użytkownicy mogą kupować utwory i płyty w sklepie aplikacji.
+b) Każdy użytkownik na start otrzymuje domyślną kwotę do wykorzystania w systemie.
+c) Zalogowani użytkownicy mają automatycznie ładowane dane adresowe; niezalogowani muszą je podać przy zakupie.
+Transfer Treści:
+a) Aplikacja umożliwia transfer zakupionych utworów lub płyt pomiędzy użytkownikami.
+b) W transferze uwzględniane są dane utworu, obrazek oraz kwota transakcji.
+Personalizacja:
+a) Możliwość wyboru wersji językowej.
+b) Dostępne dwa layouty (jasny i ciemny), automatycznie ustawiane po zalogowaniu.
+c) Każdy użytkownik może zarządzać swoim profilem.
+
+§4 Administratorzy i Użytkownicy
+Administrator jest odpowiedzialny za zarządzanie przypisaniami i prawami użytkowników.
+Administrator nie może zostać usunięty, jeśli jest pierwszym administratorem na liście.
+Administrator, rezygnując z roli, musi wskazać innego użytkownika, który przejmie uprawnienia.
+Zwykli użytkownicy mogą przeglądać dane w Aplikacji, ale nie mają uprawnień do ich modyfikacji.
+
+§5 Baza Danych i Backup
+Dane użytkowników oraz treści są przechowywane w bazie danych.
+W przypadku braku bazy danych podczas uruchamiania Aplikacji, system automatycznie tworzy standardową bazę danych.
+Aplikacja obsługuje różne systemy baz danych, takie jak MySQL, PostgreSQL, SQLite czy MongoDB.
+Możliwe jest wykonanie kopii zapasowej danych użytkownika lub systemu w formacie ZIP.
+
+§6 Bezpieczeństwo i Prywatność
+Aplikacja nie przechowuje haseł w postaci otwartego tekstu – zapisane są jedynie ich podwójne skróty SHA1.
+Administratorzy i użytkownicy są zobowiązani do ochrony swoich danych logowania przed dostępem osób trzecich.
+Dane osobowe użytkowników są wykorzystywane wyłącznie do celów funkcjonalnych Aplikacji.
+
+§7 Licencja i Ograniczenia
+Aplikacja posiada wersję demonstracyjną z ograniczonymi funkcjonalnościami.
+Pełna wersja programu wymaga klucza odblokowującego.
+Użytkownicy nie mogą dokonywać modyfikacji kodu źródłowego Aplikacji ani ingerować w jej działanie bez zgody twórcy.
+
+§8 Zasady Sprzedaży i Drukowania
+Zakupione płyty i utwory są automatycznie przypisywane do profilu użytkownika.
+Aplikacja umożliwia drukowanie paragonów oraz listy zakupionych rzeczy.
+
+§9 Zmiany Regulaminu
+Twórca Aplikacji zastrzega sobie prawo do zmiany niniejszego regulaminu.
+W przypadku zmiany regulaminu użytkownicy zostaną o tym poinformowani przy pierwszym logowaniu po aktualizacji.
+
+§10 Postanowienia Końcowe
+Wszelkie pytania dotyczące Aplikacji należy kierować na adres kontaktowy podany w sekcji "O Programie".
+W przypadku konfliktów dotyczących funkcjonowania Aplikacji zastosowanie mają przepisy prawa obowiązującego w kraju użytkownika.

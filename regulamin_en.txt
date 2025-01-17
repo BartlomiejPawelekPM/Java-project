@@ -1,0 +1,66 @@
+§1 General Provisions
+These regulations define the rules for using the "JBT Sound" application (hereinafter referred to as the "Application").
+Using the Application is equivalent to accepting these regulations.
+The Application enables the management of data related to albums, creators, tracks, and facilitates transactions for purchasing and transferring digital content.
+If the regulation file is missing, this version is automatically restored.
+
+§2 Registration and Login
+Access to the Application requires user registration via the login screen.
+The first registered user becomes the system administrator.
+Users are required to provide accurate personal and address details, which will be stored in the database.
+User passwords are secured using a double SHA1 hash.
+The administrator has the right to grant and revoke administrative privileges to other users, except for removing the first administrator.
+
+§3 Application Features
+Content Management
+a) The ability to add, edit, and delete information about albums, creators, and tracks.
+b) The ability to assign tracks and creators to albums.
+c) If a creator is assigned during the addition of tracks to an album, all tracks automatically belong to that creator.
+
+Store
+a) Users can purchase tracks and albums through the application's store.
+b) Each user receives a default amount of funds upon registration to use within the system.
+c) Logged-in users have their address details automatically loaded; non-logged-in users must provide them during purchase.
+
+Content Transfer
+a) The Application enables the transfer of purchased tracks or albums between users.
+b) Transfers include track details, artwork, and transaction amounts.
+
+Personalization
+a) Option to choose the language version.
+b) Two available layouts (light for day and dark for night), automatically set after login.
+c) Each user can manage their profile.
+
+§4 Administrators and Users
+The administrator is responsible for managing assignments and user privileges.
+The administrator cannot be removed if they are the first administrator on the list.
+An administrator resigning from their role must designate another user to take over their privileges.
+Regular users can view data in the Application but do not have permissions to modify it.
+
+§5 Database and Backup
+User data and content are stored in the database.
+If the database is missing when the Application starts, the system automatically creates a default database.
+The Application supports various database systems, such as MySQL, PostgreSQL, SQLite, and MongoDB.
+A backup of user or system data can be created in ZIP format.
+
+§6 Security and Privacy
+The Application does not store passwords in plain text – only their double SHA1 hashes are stored.
+Administrators and users are obligated to protect their login credentials from unauthorized access.
+Users' personal data is used solely for the functional purposes of the Application.
+
+§7 License and Restrictions
+The Application includes a demo version with limited functionality.
+The full version of the program requires an unlocking key.
+Users may not modify the source code of the Application or interfere with its operation without the creator's consent.
+
+§8 Sales and Printing Rules
+Purchased albums and tracks are automatically assigned to the user's profile.
+The Application allows printing of receipts and lists of purchased items.
+
+§9 Amendments to the Regulations
+The Application creator reserves the right to change these regulations.
+Users will be informed of any changes to the regulations upon their first login after the update.
+
+§10 Final Provisions
+Any questions regarding the Application should be directed to the contact address provided in the "About" section.
+In case of disputes regarding the functioning of the Application, the applicable law in the user's country will apply.
