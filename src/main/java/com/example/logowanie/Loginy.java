@@ -75,32 +75,43 @@ public class Loginy {
         passwordStackPane.setPrefWidth(300);
         passwordStackPane.setPrefHeight(40);
 
-        passwordField.setPromptText("Hasło");
+        final Image[] eyeImage = {new Image(getClass().getResourceAsStream("/eye.png"))};
+        ImageView eyeImageView = new ImageView(eyeImage[0]);
+        eyeImageView.setFitWidth(40);  // Rozmiar ikony
+        eyeImageView.setFitHeight(30);
 
-        Button togglePasswordVisibilityButton = new Button("👁️");
-        togglePasswordVisibilityButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #B3B3B3; -fx-font-size: 20px; -fx-border-width: 0;");
-        togglePasswordVisibilityButton.setMaxWidth(30);
-        togglePasswordVisibilityButton.setMinWidth(30);
+// Przygotowanie przycisku z obrazkiem
+        Button togglePasswordVisibilityButton = new Button();
+        togglePasswordVisibilityButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0;");  // Ustawienie przejrzystości tła
+        togglePasswordVisibilityButton.setGraphic(eyeImageView);
 
+        // Flaga do kontrolowania widoczności hasła
+        // Flaga do kontrolowania widoczności hasła
+        boolean[] passwordVisible = {false};  // Używamy tablicy, by zmieniać stan w obrębie funkcji
+
+// Funkcja przełączająca widoczność hasła
         togglePasswordVisibilityButton.setOnAction(event -> {
-            if (passwordField.getText().isEmpty()) return; // Zapobiega zmianie ikony, gdy pole hasła jest puste
-
-            if (passwordField.isVisible()) {
-                passwordField.setVisible(false);  // Ukrywamy hasło
-                passwordField.setManaged(false);  // Nie zarządzamy polem, aby nie zajmowało miejsca
-                togglePasswordVisibilityButton.setText("🚫"); // Zmieniamy ikonę na przekreślone oczko
+            if (passwordVisible[0]) {
+                // Jeśli hasło jest widoczne, to ukrywamy je (kropki)
+                passwordField.setText(passwordField.getText().replaceAll(".", "•"));
+                passwordVisible[0] = false;
+                // Zmiana ikony na inne (np. przekreślone oko)
+                eyeImage[0] = new Image(getClass().getResourceAsStream("/blindeye.png"));
+                eyeImageView.setImage(eyeImage[0]);
             } else {
-                passwordField.setVisible(true);   // Pokazujemy hasło
-                passwordField.setManaged(true);   // Ponownie zarządzamy polem
-                togglePasswordVisibilityButton.setText("👁️"); // Zmieniamy ikonę na oczko
+                // Jeśli hasło jest ukryte, pokazujemy je
+                passwordField.setText(passwordField.getText().replaceAll("•", ""));  // Przywracamy oryginalne hasło
+                passwordVisible[0] = true;
+                // Przywracamy obrazek "oczka"
+                eyeImage[0] = new Image(getClass().getResourceAsStream("/eye.png"));
+                eyeImageView.setImage(eyeImage[0]);
             }
         });
 
         passwordStackPane.getChildren().addAll(passwordField, togglePasswordVisibilityButton);
+        StackPane.setAlignment(togglePasswordVisibilityButton, Pos.CENTER_RIGHT);  // Ustawienie ikony na prawo
 
         gridPane.add(passwordStackPane, 1, 2);
-
-        //gridPane.add(passwordField, 1, 2);
 
         gridPane.add(loginButton, 1, 3);
         GridPane.setHalignment(loginButton, HPos.CENTER);
