@@ -1,37 +1,53 @@
 package com.example.logowanie;
 
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import com.example.logowanie.Main;
+import com.example.logowanie.MSController;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.text.Font;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
+import org.controlsfx.control.spreadsheet.Grid;
 
 public class Loginy {
     public Loginy(Stage primaryStage, Main main) {
-        Label usernameLabel = new Label("Nazwa użytkownika:");
+
         TextField usernameField = new TextField();
-        Label passwordLabel = new Label("Hasło:");
+
         PasswordField passwordField = new PasswordField();
         Button loginButton = new Button("Zaloguj");
         Hyperlink registerLink = new Hyperlink("Zarejestruj się");
         Label messageLabel = new Label();
 
-        usernameField.setPrefWidth(200);
-        passwordField.setPrefWidth(200);
-        loginButton.setPrefWidth(200);
+        usernameField.setPrefWidth(300);
+        usernameField.setPrefHeight(40);
 
-        usernameLabel.setFont(new Font("Arial", 14));
-        passwordLabel.setFont(new Font("Arial", 14));
-        loginButton.setFont(new Font("Arial", 14));
+        passwordField.setPrefWidth(300);
+        passwordField.setPrefHeight(40);
+
+        loginButton.setPrefWidth(200);
+        loginButton.setPrefHeight(50);
+
+        usernameField.setStyle("-fx-font-size: 18px; -fx-text-fill: #B3B3B3;");
+        passwordField.setStyle("-fx-font-size: 18px; -fx-text-fill: #B3B3B3;");
+        loginButton.setStyle("-fx-background-color: #1DB954; -fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;");
+        registerLink.setStyle("-fx-font-size: 16px; -fx-text-fill: white; -fx-underline: true;");
+
+        //loginButton.setFont(new Font("Arial", 14));
         registerLink.setFont(new Font("Arial", 12));
+
+        usernameField.setPromptText("Login");
+        passwordField.setPromptText("Hasło");
+
+        usernameField.setStyle("-fx-prompt-text-fill: #B3B3B3;");
+        passwordField.setStyle("-fx-prompt-text-fill: #B3B3B3;");
 
         GridPane gridPane = new GridPane();
         gridPane.setVgap(10);
@@ -39,39 +55,51 @@ public class Loginy {
 
         gridPane.setAlignment(Pos.CENTER);
 
-        //Image logoImage = new Image("");
-        //ImageView logoView = new ImageView(logoImage);
-        //logoView.setFitWidth(100);
-        //logoView.setPreserveRatio(true);
+        HBox logoBox = new HBox(10);
+        logoBox.setAlignment(Pos.CENTER_LEFT);
+        logoBox.setMaxWidth(Double.MAX_VALUE);
 
-        gridPane.add(usernameLabel, 0, 0);
-        gridPane.add(usernameField, 1, 0);
-        gridPane.add(passwordLabel, 0, 1);
-        gridPane.add(passwordField, 1, 1);
-        gridPane.add(loginButton, 1, 2);
-        gridPane.add(registerLink, 1, 3);
-        gridPane.add(messageLabel, 1, 4);
+        ImageView logoView = new ImageView(Logo.getLogoImage());
+        logoView.setPreserveRatio(true);
 
-        usernameLabel.setAlignment(Pos.CENTER);
-        passwordLabel.setAlignment(Pos.CENTER);
+        Text NaszaMarka = new Text("JBT");
+        NaszaMarka.setFont(new Font("Arial", 20));
+        NaszaMarka.setFill(Color.web("#1DB954"));
+
+        double logoWidth = NaszaMarka.getBoundsInLocal().getWidth();
+        logoView.setFitWidth(logoWidth);
+
+        logoBox.getChildren().addAll(logoView, NaszaMarka);
+
+        gridPane.add(logoBox,1,0);
+
+        gridPane.add(usernameField, 1, 1);
+
+        gridPane.add(passwordField, 1, 2);
+
+        gridPane.add(loginButton, 1, 3);
+        GridPane.setHalignment(loginButton, HPos.CENTER);
+
+        gridPane.add(registerLink, 1, 8);
+        GridPane.setHalignment(registerLink, HPos.CENTER);
+
+        gridPane.add(messageLabel, 1, 5);
+        GridPane.setHalignment(messageLabel, HPos.CENTER);
+
+        gridPane.setPadding(new Insets(20,20,20,20));
+
         messageLabel.setAlignment(Pos.CENTER);
         loginButton.setAlignment(Pos.CENTER);
         registerLink.setAlignment(Pos.CENTER);
 
         gridPane.setBackground(new Background(new BackgroundFill(Color.web("#121212"), CornerRadii.EMPTY, null)));
 
-        usernameLabel.setTextFill(Color.WHITE);
-        passwordLabel.setTextFill(Color.WHITE);
         messageLabel.setTextFill(Color.WHITE);
         registerLink.setTextFill(Color.WHITE);
 
-        usernameField.setStyle("-fx-text-fill: #B3B3B3;");
-        passwordField.setStyle("-fx-text-fill: #B3B3B3;");
 
-        loginButton.setStyle("-fx-background-color: #1DB954; -fx-text-fill: white;");
-
-        loginButton.setOnMouseEntered(e -> loginButton.setStyle("-fx-background-color: #1ed760; -fx-text-fill: white;"));
-        loginButton.setOnMouseExited(e -> loginButton.setStyle("-fx-background-color: #1DB954; -fx-text-fill: white;"));
+        loginButton.setOnMouseEntered(e -> loginButton.setStyle("-fx-background-color: #1ed760; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
+        loginButton.setOnMouseExited(e -> loginButton.setStyle("-fx-background-color: #1DB954; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
 
         registerLink.setStyle("-fx-underline: true;");
 
@@ -79,7 +107,10 @@ public class Loginy {
         loginButton.setOnAction(event -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
-            if (authenticate(username, password)) {
+
+            MSController msController = new MSController();
+
+            if (MSController.login(username, password)) {
                 messageLabel.setText("Logowanie powiodło się!");
             } else {
                 messageLabel.setText("Niepoprawne dane logowania.");
