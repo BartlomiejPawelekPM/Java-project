@@ -13,19 +13,15 @@ import javafx.scene.text.Font;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
-import org.controlsfx.control.spreadsheet.Grid;
+import com.example.logowanie.MSController;
 
 public class Rejestracja {
     public Rejestracja(Stage primaryStage, Main main) {
 
         TextField usernameField = new TextField();
-
         PasswordField passwordField = new PasswordField();
-
         PasswordField confirmPasswordField = new PasswordField();
-
         TextField mail = new TextField();
-
         Button registerButton = new Button("Zarejestruj");
         Hyperlink backToLoginLink = new Hyperlink("Powrót do logowania");
         Label messageLabel = new Label();
@@ -47,8 +43,6 @@ public class Rejestracja {
         confirmPasswordField.setStyle("-fx-font-size: 18px; -fx-text-fill: #B3B3B3;");
         registerButton.setStyle("-fx-background-color: #1DB954; -fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;");
         backToLoginLink.setStyle("-fx-font-size: 16px; -fx-text-fill: white; -fx-underline: true;");
-
-        //registerButton.setFont(new Font("Arial", 14));
         backToLoginLink.setFont(new Font("Arial", 12));
 
         usernameField.setPromptText("Login");
@@ -62,7 +56,6 @@ public class Rejestracja {
         GridPane gridPane = new GridPane();
         gridPane.setVgap(10);
         gridPane.setHgap(10);
-
         gridPane.setAlignment(Pos.CENTER);
 
         HBox logoBox = new HBox(10);
@@ -72,7 +65,7 @@ public class Rejestracja {
         ImageView logoView = new ImageView(Logo.getLogoImage());
         logoView.setPreserveRatio(true);
 
-        Text NaszaMarka = new Text("JBT");
+        Text NaszaMarka = new Text("JBTSound");
         NaszaMarka.setFont(new Font("Arial", 20));
         NaszaMarka.setFill(Color.web("#1DB954"));
 
@@ -81,14 +74,41 @@ public class Rejestracja {
 
         logoBox.getChildren().addAll(logoView, NaszaMarka);
 
-        gridPane.add(logoBox,1,0);
+        TextField visiblePasswordField = new TextField();
+        visiblePasswordField.setManaged(false);
+        visiblePasswordField.setVisible(false);
+        visiblePasswordField.textProperty().bindBidirectional(passwordField.textProperty());
 
+        TextField visibleConfirmPasswordField = new TextField();
+        visibleConfirmPasswordField.setManaged(false);
+        visibleConfirmPasswordField.setVisible(false);
+        visibleConfirmPasswordField.textProperty().bindBidirectional(confirmPasswordField.textProperty());
+
+        Button togglePasswordVisibilityButton = new Button("👁️");
+        togglePasswordVisibilityButton.setOnAction(event -> {
+            boolean isPasswordVisible = visiblePasswordField.isVisible();
+            visiblePasswordField.setVisible(!isPasswordVisible);
+            visiblePasswordField.setManaged(!isPasswordVisible);
+            passwordField.setVisible(isPasswordVisible);
+            passwordField.setManaged(isPasswordVisible);
+        });
+
+        Button toggleConfirmPasswordVisibilityButton = new Button("👁️");
+        toggleConfirmPasswordVisibilityButton.setOnAction(event -> {
+            boolean isPasswordVisible = visibleConfirmPasswordField.isVisible();
+            visibleConfirmPasswordField.setVisible(!isPasswordVisible);
+            visibleConfirmPasswordField.setManaged(!isPasswordVisible);
+            confirmPasswordField.setVisible(isPasswordVisible);
+            confirmPasswordField.setManaged(isPasswordVisible);
+        });
+
+        HBox passwordBox = new HBox(5, passwordField, visiblePasswordField, togglePasswordVisibilityButton);
+        HBox confirmPasswordBox = new HBox(5, confirmPasswordField, visibleConfirmPasswordField, toggleConfirmPasswordVisibilityButton);
+
+        gridPane.add(logoBox, 1, 0);
         gridPane.add(usernameField, 1, 1);
-
         gridPane.add(passwordField, 1, 2);
-
         gridPane.add(confirmPasswordField, 1, 3);
-
         gridPane.add(registerButton, 1, 4);
         GridPane.setHalignment(registerButton, HPos.CENTER);
 
@@ -98,14 +118,11 @@ public class Rejestracja {
         gridPane.add(messageLabel, 1, 5);
         GridPane.setHalignment(messageLabel, HPos.CENTER);
 
-        gridPane.setPadding(new Insets(20,20,20,20));
-
+        gridPane.setPadding(new Insets(20, 20, 20, 20));
         gridPane.setBackground(new Background(new BackgroundFill(Color.web("#121212"), CornerRadii.EMPTY, null)));
-
 
         messageLabel.setTextFill(Color.WHITE);
         backToLoginLink.setTextFill(Color.WHITE);
-
 
         registerButton.setOnMouseEntered(e -> registerButton.setStyle("-fx-background-color: #1ed760; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
         registerButton.setOnMouseExited(e -> registerButton.setStyle("-fx-background-color: #1DB954; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
@@ -131,7 +148,7 @@ public class Rejestracja {
             if (MSController.register(username, password)) {
                 messageLabel.setText("Rejestracja zakończona sukcesem!");
             } else {
-                messageLabel.setText("Błąd podczas rejestracji.");
+                messageLabel.setText("Błąd podczas rejestracji lub użytkownik już istnieje.");
             }
         });
 
@@ -145,8 +162,4 @@ public class Rejestracja {
         primaryStage.show();
     }
 
-    private boolean registerUser(String username, String password) {
-        System.out.println("Rejestrowanie użytkownika: " + username);
-        return true;
-    }
 }
