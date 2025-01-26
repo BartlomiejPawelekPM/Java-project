@@ -49,13 +49,10 @@ public class Rejestracja {
         passwordField.setPromptText("Hasło");
         confirmPasswordField.setPromptText("Potwierdź hasło");
 
-        usernameField.setStyle("-fx-prompt-text-fill: #B3B3B3;");
-        passwordField.setStyle("-fx-prompt-text-fill: #B3B3B3;");
-        confirmPasswordField.setStyle("-fx-prompt-text-fill: #B3B3B3;");
-
         GridPane gridPane = new GridPane();
         gridPane.setVgap(10);
         gridPane.setHgap(10);
+
         gridPane.setAlignment(Pos.CENTER);
 
         HBox logoBox = new HBox(10);
@@ -73,61 +70,24 @@ public class Rejestracja {
         logoView.setFitWidth(logoWidth);
 
         logoBox.getChildren().addAll(logoView, NaszaMarka);
-
-        TextField visiblePasswordField = new TextField();
-        visiblePasswordField.setManaged(false);
-        visiblePasswordField.setVisible(false);
-        visiblePasswordField.textProperty().bindBidirectional(passwordField.textProperty());
-
-        TextField visibleConfirmPasswordField = new TextField();
-        visibleConfirmPasswordField.setManaged(false);
-        visibleConfirmPasswordField.setVisible(false);
-        visibleConfirmPasswordField.textProperty().bindBidirectional(confirmPasswordField.textProperty());
-
-        Button togglePasswordVisibilityButton = new Button("👁️");
-        togglePasswordVisibilityButton.setOnAction(event -> {
-            boolean isPasswordVisible = visiblePasswordField.isVisible();
-            visiblePasswordField.setVisible(!isPasswordVisible);
-            visiblePasswordField.setManaged(!isPasswordVisible);
-            passwordField.setVisible(isPasswordVisible);
-            passwordField.setManaged(isPasswordVisible);
-        });
-
-        Button toggleConfirmPasswordVisibilityButton = new Button("👁️");
-        toggleConfirmPasswordVisibilityButton.setOnAction(event -> {
-            boolean isPasswordVisible = visibleConfirmPasswordField.isVisible();
-            visibleConfirmPasswordField.setVisible(!isPasswordVisible);
-            visibleConfirmPasswordField.setManaged(!isPasswordVisible);
-            confirmPasswordField.setVisible(isPasswordVisible);
-            confirmPasswordField.setManaged(isPasswordVisible);
-        });
-
-        HBox passwordBox = new HBox(5, passwordField, visiblePasswordField, togglePasswordVisibilityButton);
-        HBox confirmPasswordBox = new HBox(5, confirmPasswordField, visibleConfirmPasswordField, toggleConfirmPasswordVisibilityButton);
-
         gridPane.add(logoBox, 1, 0);
+
         gridPane.add(usernameField, 1, 1);
         gridPane.add(passwordField, 1, 2);
         gridPane.add(confirmPasswordField, 1, 3);
         gridPane.add(registerButton, 1, 4);
-        GridPane.setHalignment(registerButton, HPos.CENTER);
+        gridPane.add(messageLabel, 1, 5);
+        gridPane.add(backToLoginLink, 1, 6);
 
-        gridPane.add(backToLoginLink, 1, 8);
+        GridPane.setHalignment(registerButton, HPos.CENTER);
         GridPane.setHalignment(backToLoginLink, HPos.CENTER);
 
-        gridPane.add(messageLabel, 1, 5);
-        GridPane.setHalignment(messageLabel, HPos.CENTER);
-
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
         gridPane.setBackground(new Background(new BackgroundFill(Color.web("#121212"), CornerRadii.EMPTY, null)));
-
         messageLabel.setTextFill(Color.WHITE);
         backToLoginLink.setTextFill(Color.WHITE);
 
         registerButton.setOnMouseEntered(e -> registerButton.setStyle("-fx-background-color: #1ed760; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
         registerButton.setOnMouseExited(e -> registerButton.setStyle("-fx-background-color: #1DB954; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
-
-        backToLoginLink.setStyle("-fx-underline: true");
 
         // Obsługa rejestracji
         registerButton.setOnAction(event -> {
@@ -135,24 +95,35 @@ public class Rejestracja {
             String password = passwordField.getText();
             String confirmPassword = confirmPasswordField.getText();
 
+            MSController msController = new MSController();
+
+            // Walidacja pustych pól
             if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 messageLabel.setText("Pola są puste!");
+                messageLabel.setTextFill(Color.RED);
                 return;
             }
 
+            // Walidacja, czy hasła się zgadzają
             if (!password.equals(confirmPassword)) {
                 messageLabel.setText("Hasła nie pasują!");
+                messageLabel.setTextFill(Color.RED);
                 return;
             }
 
+            // Rejestracja użytkownika
             if (MSController.register(username, password)) {
                 messageLabel.setText("Rejestracja zakończona sukcesem!");
+                messageLabel.setTextFill(Color.GREEN);
+
+                main.openMainMenuWindow();
             } else {
                 messageLabel.setText("Błąd podczas rejestracji lub użytkownik już istnieje.");
+                messageLabel.setTextFill(Color.RED);
             }
         });
 
-        // Powrót do logowania
+
         backToLoginLink.setOnAction(event -> main.openLoginWindow());
 
         // Ustawienie sceny
@@ -161,5 +132,4 @@ public class Rejestracja {
         primaryStage.setTitle("Rejestracja");
         primaryStage.show();
     }
-
 }

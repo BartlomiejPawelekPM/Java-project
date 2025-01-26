@@ -2,28 +2,29 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Sekcja podstawowa projektu -->
     <groupId>com.example</groupId>
     <artifactId>logowanie</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- Zależności do projektu -->
     <dependencies>
-        <!-- Zależność do obsługi MariaDB -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>3.0.5</version>
         </dependency>
 
-        <!-- Zależność do BCrypt dla haszowania haseł -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.26</version>
+        </dependency>
+
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!-- Zależność do Log4j 2 dla logowania -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -35,7 +36,6 @@
             <version>2.17.1</version>
         </dependency>
 
-        <!-- Zależność do JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -47,15 +47,20 @@
             <version>17.0.2</version>
         </dependency>
 
-        <!-- Zależność do ControlsFX -->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>11.1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.10</version>
+        </dependency>
+
     </dependencies>
 
-    <!-- Dodanie repozytorium dla log4j -->
     <repositories>
         <repository>
             <id>central</id>
@@ -65,7 +70,6 @@
 
     <build>
         <plugins>
-            <!-- Plugin do kompilacji -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -75,7 +79,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin do uruchamiania JavaFX -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>

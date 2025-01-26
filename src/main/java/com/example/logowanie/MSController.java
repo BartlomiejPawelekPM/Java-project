@@ -1,8 +1,10 @@
 package com.example.logowanie;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javafx.fxml.FXML;
+
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,91 +12,84 @@ import java.sql.SQLException;
 
 public class MSController {
 
-    private static final Logger logger = LogManager.getLogger(MSController.class);
+    // Dodanie loggera
+    private static final Logger logger = LoggerFactory.getLogger(MSController.class);
+    private static final LanguageManager languageManager = new LanguageManager();
 
     public static boolean login(String username, String password) {
-        logger.info("Attempting to log in with username: {}", username);
+        // Zapytanie do bazy danych po użytkowniku
+        String query = "SELECT * FROM uzytkownicy WHERE nazwa_uzytkownika = ?";
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-        try (Connection connection = MySQLConnection.getConnection()) {
-            logger.info("Connected to the database successfully.");
-
-            String debugQuery = "SELECT * FROM uzytkownicy WHERE username = 'admin'";
-            PreparedStatement debugStatement = connection.prepareStatement(debugQuery);
-            ResultSet debugResultSet = debugStatement.executeQuery();
-
-            while (debugResultSet.next()) {
-                logger.info("Debug - Found user in database:");
-                logger.info("Username: {}", debugResultSet.getString("username"));
-                logger.info("Password (hashed): {}", debugResultSet.getString("password"));
-            }
-
-            String query = "SELECT * FROM uzytkownicy WHERE username = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
-
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                String storedHashedPassword = resultSet.getString("password"); // Pobierz hasło z bazy danych
-                logger.info("Found user: {}", username);
 
-                // Porównanie hasła wprowadzonego przez użytkownika z hasłem zapisanym w bazie
+            if (resultSet.next()) {
+                String storedHashedPassword = resultSet.getString("haslo");
+                System.out.println("Sprawdzam dane dla użytkownika: " + username);
+                System.out.println("Hash zapisany w bazie: " + storedHashedPassword);
+
+                // Porównanie hasła za pomocą BCrypt
                 if (BCrypt.checkpw(password, storedHashedPassword)) {
-                    logger.info("Login successful for username: {}", username);
+                    System.out.println("Hasła pasują!");
                     return true; // Logowanie powiodło się
                 } else {
-                    logger.warn("Invalid password for username: {}", username);
+                    System.out.println("Hasła się nie zgadzają.");
                 }
             } else {
-                logger.warn("User not found: {}", username);
+                System.out.println("Użytkownik " + username + " nie istnieje.");
             }
         } catch (SQLException e) {
-            logger.error("Database error during login attempt for username: {}", username, e);
+            e.printStackTrace();
         }
-        return false; // Logowanie nieudane
+        return false; // Jeśli użytkownik nie istnieje lub hasło nie pasuje
     }
 
     public static boolean register(String username, String password) {
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         logger.info("Attempting to register user: {}", username);
 
+        // Sprawdzamy, czy użytkownik już istnieje
         if (doesUserExist(username)) {
             logger.warn("User already exists: {}", username);
-            return false;
+            return false; // Użytkownik już istnieje
         }
 
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
         try (Connection connection = MySQLConnection.getConnection()) {
-            String query = "INSERT INTO uzytkownicy (username, password) VALUES (?, ?)";
+            String query = "INSERT INTO uzytkownicy (nazwa_uzytkownika, haslo, permisje, email, zdjecie, Saldo, Imie, Nazwisko, Adres)" +
+                    "VALUES (?, ?, ?, '', '', 0.00, '', '', '')";
+            System.out.println("Query: " + query);
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, hashedPassword);
-            int rowsAffected = statement.executeUpdate();
+            statement.setInt(3, 2);
 
-            if (rowsAffected > 0) {
-                logger.info("Registration successful for username: {}", username);
-                return true;
-            } else {
-                logger.warn("Registration failed for username: {}", username);
-            }
+            System.out.println("Parameters: username=" + username + ", hashedPassword=" + hashedPassword);
+
+            int rowsAffected = statement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+            return rowsAffected > 0;
         } catch (SQLException e) {
-            logger.error("Database error during registration attempt for username: {}", username, e);
+            logger.error("Database error during registration attempt for username: " + username, e);
+            return false;
         }
-        return false;
     }
 
+    // Sprawdzenie, czy użytkownik już istnieje
     private static boolean doesUserExist(String username) {
-        logger.info("Checking if user exists: {}", username);
-
         try (Connection connection = MySQLConnection.getConnection()) {
-            String query = "SELECT * FROM uzytkownicy WHERE username = ?";
+            String query = "SELECT COUNT(*) FROM uzytkownicy WHERE nazwa_uzytkownika = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
 
-            return resultSet.next(); // If user exists, return true
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                return true; // Użytkownik już istnieje
+            }
         } catch (SQLException e) {
-            logger.error("Database error while checking if user exists: {}", username, e);
+            logger.error("Error checking if user exists: {}", username, e);
         }
-        return false;
+        return false; // Użytkownik nie istnieje
     }
 }

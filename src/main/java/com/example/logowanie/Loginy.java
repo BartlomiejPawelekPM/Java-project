@@ -14,7 +14,6 @@ import javafx.scene.text.Font;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
-//import org.controlsfx.control.spreadsheet.Grid;
 
 public class Loginy {
     public Loginy(Stage primaryStage, Main main) {
@@ -67,7 +66,7 @@ public class Loginy {
         logoView.setFitWidth(logoWidth);
 
         logoBox.getChildren().addAll(logoView, NaszaMarka);
-        gridPane.add(logoBox,1,0);
+        gridPane.add(logoBox, 1, 0);
 
         gridPane.add(usernameField, 1, 1);
 
@@ -77,39 +76,31 @@ public class Loginy {
 
         final Image[] eyeImage = {new Image(getClass().getResourceAsStream("/eye.png"))};
         ImageView eyeImageView = new ImageView(eyeImage[0]);
-        eyeImageView.setFitWidth(40);  // Rozmiar ikony
+        eyeImageView.setFitWidth(40);
         eyeImageView.setFitHeight(30);
 
-// Przygotowanie przycisku z obrazkiem
         Button togglePasswordVisibilityButton = new Button();
-        togglePasswordVisibilityButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0;");  // Ustawienie przejrzystości tła
+        togglePasswordVisibilityButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0;");
         togglePasswordVisibilityButton.setGraphic(eyeImageView);
 
-        // Flaga do kontrolowania widoczności hasła
-        // Flaga do kontrolowania widoczności hasła
-        boolean[] passwordVisible = {false};  // Używamy tablicy, by zmieniać stan w obrębie funkcji
+        boolean[] passwordVisible = {false};
 
-// Funkcja przełączająca widoczność hasła
         togglePasswordVisibilityButton.setOnAction(event -> {
             if (passwordVisible[0]) {
-                // Jeśli hasło jest widoczne, to ukrywamy je (kropki)
                 passwordField.setText(passwordField.getText().replaceAll(".", "•"));
                 passwordVisible[0] = false;
-                // Zmiana ikony na inne (np. przekreślone oko)
                 eyeImage[0] = new Image(getClass().getResourceAsStream("/blindeye.png"));
                 eyeImageView.setImage(eyeImage[0]);
             } else {
-                // Jeśli hasło jest ukryte, pokazujemy je
-                passwordField.setText(passwordField.getText().replaceAll("•", ""));  // Przywracamy oryginalne hasło
+                passwordField.setText(passwordField.getText().replaceAll("•", ""));
                 passwordVisible[0] = true;
-                // Przywracamy obrazek "oczka"
                 eyeImage[0] = new Image(getClass().getResourceAsStream("/eye.png"));
                 eyeImageView.setImage(eyeImage[0]);
             }
         });
 
         passwordStackPane.getChildren().addAll(passwordField, togglePasswordVisibilityButton);
-        StackPane.setAlignment(togglePasswordVisibilityButton, Pos.CENTER_RIGHT);  // Ustawienie ikony na prawo
+        StackPane.setAlignment(togglePasswordVisibilityButton, Pos.CENTER_RIGHT);
 
         gridPane.add(passwordStackPane, 1, 2);
 
@@ -122,7 +113,7 @@ public class Loginy {
         gridPane.add(messageLabel, 1, 5);
         GridPane.setHalignment(messageLabel, HPos.CENTER);
 
-        gridPane.setPadding(new Insets(20,20,20,20));
+        gridPane.setPadding(new Insets(20, 20, 20, 20));
 
         messageLabel.setAlignment(Pos.CENTER);
         loginButton.setAlignment(Pos.CENTER);
@@ -132,7 +123,6 @@ public class Loginy {
 
         messageLabel.setTextFill(Color.WHITE);
         registerLink.setTextFill(Color.WHITE);
-
 
         loginButton.setOnMouseEntered(e -> loginButton.setStyle("-fx-background-color: #1ed760; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
         loginButton.setOnMouseExited(e -> loginButton.setStyle("-fx-background-color: #1DB954; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
@@ -146,14 +136,25 @@ public class Loginy {
 
             MSController msController = new MSController();
 
+            System.out.println("Wynik logowania: " + MSController.login(username, password));
+
+
             if (MSController.login(username, password)) {
                 messageLabel.setText("Logowanie powiodło się!");
                 messageLabel.setTextFill(Color.GREEN);
+
+                main.settLoggedIn(true);
+
+                primaryStage.close();
+
+                main.openMainMenuWindow();
+
             } else {
                 messageLabel.setText("Niepoprawne dane logowania.");
                 messageLabel.setTextFill(Color.RED);
             }
         });
+
         registerLink.setOnAction(event -> main.openRegistrationWindow());
 
         // Ustawienie sceny
