@@ -12,11 +12,15 @@ public class Menuadmin {
     private Stage primaryStage;
     private final LanguageManager languageManager;
     private final Theme themeManager;
+    private final Main main;
+    private int userId;
 
-    public Menuadmin(Stage primaryStage, LanguageManager languageManager, Theme themeManager, Main main) {
+    public Menuadmin(Stage primaryStage, LanguageManager languageManager, Theme themeManager, Main main, int userId) {
         this.primaryStage = primaryStage;
         this.languageManager = languageManager;
         this.themeManager = themeManager;
+        this.main = main;
+        this.userId = userId;
 
         try {
             initializeUI(main);
@@ -30,7 +34,7 @@ public class Menuadmin {
 
         Bottom bottomSection = new Bottom(languageManager);
 
-        ToolBar toolBar = new ToolBar(languageManager, themeManager, bottomSection, main);
+        ToolBar toolBar = new ToolBar(languageManager, themeManager, bottomSection, main, userId);
         root.setTop(toolBar.getToolBar());
 
 

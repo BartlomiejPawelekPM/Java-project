@@ -12,12 +12,10 @@ import java.sql.SQLException;
 
 public class MSController {
 
-    // Dodanie loggera
     private static final Logger logger = LoggerFactory.getLogger(MSController.class);
     private static final LanguageManager languageManager = new LanguageManager();
 
     public static boolean login(String username, String password) {
-        // Zapytanie do bazy danych po użytkowniku
         String query = "SELECT * FROM uzytkownicy WHERE nazwa_uzytkownika = ?";
         try (Connection connection = MySQLConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -30,10 +28,9 @@ public class MSController {
                 System.out.println("Sprawdzam dane dla użytkownika: " + username);
                 System.out.println("Hash zapisany w bazie: " + storedHashedPassword);
 
-                // Porównanie hasła za pomocą BCrypt
                 if (BCrypt.checkpw(password, storedHashedPassword)) {
                     System.out.println("Hasła pasują!");
-                    return true; // Logowanie powiodło się
+                    return true;
                 } else {
                     System.out.println("Hasła się nie zgadzają.");
                 }
@@ -43,17 +40,16 @@ public class MSController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // Jeśli użytkownik nie istnieje lub hasło nie pasuje
+        return false;
     }
 
     public static boolean register(String username, String password) {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         logger.info("Attempting to register user: {}", username);
 
-        // Sprawdzamy, czy użytkownik już istnieje
         if (doesUserExist(username)) {
             logger.warn("User already exists: {}", username);
-            return false; // Użytkownik już istnieje
+            return false;
         }
 
         try (Connection connection = MySQLConnection.getConnection()) {
@@ -76,7 +72,7 @@ public class MSController {
         }
     }
 
-    // Sprawdzenie, czy użytkownik już istnieje
+
     private static boolean doesUserExist(String username) {
         try (Connection connection = MySQLConnection.getConnection()) {
             String query = "SELECT COUNT(*) FROM uzytkownicy WHERE nazwa_uzytkownika = ?";
@@ -85,11 +81,31 @@ public class MSController {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next() && resultSet.getInt(1) > 0) {
-                return true; // Użytkownik już istnieje
+                return true;
             }
         } catch (SQLException e) {
             logger.error("Error checking if user exists: {}", username, e);
         }
-        return false; // Użytkownik nie istnieje
+        return false;
+    }
+
+    public static int getUserIdByUsername(String username) {
+        String query = "SELECT id FROM uzytkownicy WHERE nazwa_uzytkownika = ?";
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int userId = resultSet.getInt("id");
+                    System.out.println("Znaleziono userId: " + userId);
+                    return userId;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Błąd podczas pobierania userId:");
+            e.printStackTrace();
+        }
+        return -1;
     }
 }

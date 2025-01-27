@@ -7,7 +7,6 @@ public class Theme {
     private boolean isDarkMode;
 
     public Theme() {
-        // Domyślnie ustawiamy jasny motyw
         this.isDarkMode = false;
     }
 
@@ -15,12 +14,10 @@ public class Theme {
         return isDarkMode;
     }
 
-    // Metoda do zmiany motywu
     public void toggleTheme() {
-        isDarkMode = !isDarkMode;  // Zmieniamy tryb na ciemny/jasny
+        isDarkMode = !isDarkMode;
     }
 
-    // Metoda do zastosowania motywu na scenie
     public void applyTheme(Scene scene) {
         if (isDarkMode) {
             scene.getRoot().setStyle("-fx-background-color: #2e2e2e; -fx-text-fill: #ffffff;");

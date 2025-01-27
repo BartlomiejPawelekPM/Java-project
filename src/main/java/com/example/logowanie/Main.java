@@ -9,6 +9,7 @@ public class Main extends Application {
     private LanguageManager languageManager;
     private boolean isLoggedIn = false;
     private Theme themeManager;
+    private int userId;
 
     @Override
     public void start(Stage primaryStage){
@@ -34,14 +35,20 @@ public class Main extends Application {
 
     public void openMainMenuWindow() {
         if (isLoggedIn) {
-            new Menuadmin(primaryStage, languageManager, themeManager, this);
+            new Menuadmin(primaryStage, languageManager, themeManager, this, userId);
         } else {
             openLoginWindow();
         }
     }
 
-    public void openProfileWindow(){
-        new Profile(primaryStage, languageManager, themeManager, this);
+    public void openProfileWindow(int userId){
+        Profile profile = new Profile(primaryStage, languageManager, themeManager, this, userId);
+        profile.initializeProfileView();
+
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public boolean isLoggedIn() {

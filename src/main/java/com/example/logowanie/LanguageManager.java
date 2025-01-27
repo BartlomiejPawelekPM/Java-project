@@ -6,17 +6,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 public class LanguageManager {
     private final BooleanProperty isEnglish = new SimpleBooleanProperty(true);
 
-    // Getter dla isEnglish jako właściwość
     public BooleanProperty isEnglishProperty() {
         return isEnglish;
     }
 
-    // Getter dla isEnglish
     public boolean isEnglish() {
         return isEnglish.get();
     }
 
-    // Setter dla isEnglish
     public void setLanguage(boolean isEnglish) {
         this.isEnglish.set(isEnglish);
     }

@@ -129,7 +129,6 @@ public class Loginy {
 
         registerLink.setStyle("-fx-underline: true;");
 
-        // Obsługa logowania
         loginButton.setOnAction(event -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
@@ -142,6 +141,14 @@ public class Loginy {
             if (MSController.login(username, password)) {
                 messageLabel.setText("Logowanie powiodło się!");
                 messageLabel.setTextFill(Color.GREEN);
+
+                int loggedInUserId = MSController.getUserIdByUsername(username);
+                if (loggedInUserId != -1) {
+                    System.out.println("Zalogowano użytkownika o ID: " + loggedInUserId); // Dodajemy logowanie
+                    main.setUserId(loggedInUserId); // Ustawiamy userId w Main
+                } else {
+                    System.out.println("Nie znaleziono użytkownika o nazwie: " + username); // Dodajemy logowanie
+                }
 
                 main.settLoggedIn(true);
 
@@ -157,7 +164,6 @@ public class Loginy {
 
         registerLink.setOnAction(event -> main.openRegistrationWindow());
 
-        // Ustawienie sceny
         Scene scene = new Scene(gridPane, 600, 500);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Logowanie");

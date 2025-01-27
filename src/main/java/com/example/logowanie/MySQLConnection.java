@@ -1,36 +1,33 @@
 package com.example.logowanie;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class MySQLConnection {
-    // Parametry połączenia z bazą danych
-    private static final String URL = "jdbc:mysql://localhost:3306/studio_nagran";  // Adres bazy danych
-    private static final String USER = "root"; // Nazwa użytkownika MySQL
-    private static final String PASSWORD = ""; // Hasło do MySQL (lub puste, jeśli brak)
+    private static final String URL = "jdbc:mysql://localhost:3306/studio_nagran";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
-    // Metoda zwracająca połączenie z bazą danych
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // Metoda sprawdzająca, czy użytkownik istnieje w bazie danych
     public static boolean doesUserExist(String username) {
         String query = "SELECT * FROM uzytkownicy WHERE nazwa_uzytkownika = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next();  // Zwraca true, jeśli użytkownik istnieje
+                return resultSet.next();
             }
         } catch (SQLException e) {
             System.out.println("Błąd połączenia z bazą danych:");
             e.printStackTrace();
         }
-        return false; // Zwraca false, jeśli użytkownik nie istnieje
+        return false;
     }
 
-    // Metoda do weryfikacji loginu i hasła
     public static boolean verifyLogin(String username, String password) {
         String query = "SELECT * FROM uzytkownicy WHERE nazwa_uzytkownika = ?";
         try (Connection connection = getConnection();
@@ -38,8 +35,8 @@ public class MySQLConnection {
             statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String storedHashedPassword = resultSet.getString("haslo");  // Hasło z bazy
-                    // Sprawdzanie hasła za pomocą BCrypt
+                    String storedHashedPassword = resultSet.getString("haslo");
+
                     return BCrypt.checkpw(password, storedHashedPassword);
                 }
             }
@@ -47,30 +44,28 @@ public class MySQLConnection {
             System.out.println("Błąd połączenia z bazą danych:");
             e.printStackTrace();
         }
-        return false; // Zwraca false, jeśli użytkownik nie istnieje lub hasło jest nieprawidłowe
+        return false;
     }
 
-    // Metoda do rejestracji użytkownika
     public static boolean registerUser(String username, String password) {
         if (doesUserExist(username)) {
-            return false;  // Jeśli użytkownik już istnieje
+            return false;
         }
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());  // Hashowanie hasła
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         String query = "INSERT INTO uzytkownicy (nazwa_uzytkownika, haslo) VALUES (?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             statement.setString(2, hashedPassword);
             int rowsAffected = statement.executeUpdate();
-            return rowsAffected > 0;  // Zwraca true, jeśli rejestracja zakończyła się sukcesem
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Błąd połączenia z bazą danych:");
             e.printStackTrace();
         }
-        return false; // Zwraca false, jeśli wystąpił błąd podczas rejestracji
+        return false;
     }
 
-    // Testowanie połączenia z bazą danych
     public static void testConnection() {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
             System.out.println("Połączenie z bazą danych zostało nawiązane!");
@@ -91,8 +86,7 @@ public class MySQLConnection {
                     int userId = resultSet.getInt("id");
                     String plainPassword = resultSet.getString("haslo");
 
-                    // Sprawdzanie, czy hasło jest już zahashowane
-                    if (!plainPassword.startsWith("$2a$")) { // Hasła BCrypt zaczynają się od "$2a$"
+                    if (!plainPassword.startsWith("$2a$")) {
                         String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
                         updateStatement.setString(1, hashedPassword);
                         updateStatement.setInt(2, userId);
@@ -106,4 +100,85 @@ public class MySQLConnection {
             e.printStackTrace();
         }
     }
+
+    public static User getUserProfile(int userId) {
+        User user = null;
+        try (Connection connection = getConnection()) {
+            String query = "SELECT * FROM uzytkownicy WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = new User(
+                        resultSet.getInt("id"),
+                        resultSet.getString("nazwa_uzytkownika"),
+                        resultSet.getString("email"),
+                        resultSet.getString("imie"),
+                        resultSet.getString("nazwisko"),
+                        resultSet.getString("adres"),
+                        resultSet.getBigDecimal("saldo") // Poprawne pobranie salda jako BigDecimal
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public static boolean updateUserProfile(int userId, String username, String email, String imie, String nazwisko, String adres) {
+        try (Connection connection = getConnection()) {
+            String query = "UPDATE uzytkownicy SET nazwa_uzytkownika = ?, email = ?, imie = ?, nazwisko = ?, adres = ? WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, email);
+            statement.setString(3, imie);
+            statement.setString(4, nazwisko);
+            statement.setString(5, adres);
+            statement.setInt(6, userId);
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public static BigDecimal getSaldo(int userId) {
+        String query = "SELECT saldo FROM uzytkownicy WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBigDecimal("saldo");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return BigDecimal.ZERO;
+    }
+
+
+    public static boolean updateSaldo(int userId, BigDecimal saldo) {
+        String query = "UPDATE uzytkownicy SET saldo = saldo + ? WHERE id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setObject(1, saldo);
+            statement.setInt(2, userId);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

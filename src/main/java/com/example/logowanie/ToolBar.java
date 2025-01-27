@@ -13,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -29,13 +31,16 @@ public class ToolBar {
     private final Theme themeManager;
     private final Bottom bottomSection;
     private final Main main;
+    private int userId;
 
-    public ToolBar(LanguageManager languageManager, Theme themeManager, Bottom bottomSection, Main main) {
+    public ToolBar(LanguageManager languageManager, Theme themeManager, Bottom bottomSection, Main main, int userId) {
         this.languageManager = languageManager;
         this.themeManager = themeManager;
         this.bottomSection = bottomSection;
         this.toolBar = createToolBar();
         this.main = main;
+        this.userId = userId;
+
     }
 
     private HBox createToolBar() {
@@ -53,7 +58,11 @@ public class ToolBar {
 
         Button profileButton = new Button("👤");
         profileButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #3C3C3C; -fx-font-size: 16;");
-        profileButton.setOnAction(e -> main.openProfileWindow());
+        profileButton.setOnAction(e -> main.openProfileWindow(userId));
+
+        Button logoutButton = new Button("🚪");
+        logoutButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #3C3C3C; -fx-font-size: 16;");
+        logoutButton.setOnAction(e -> main.openLoginWindow());
 
         changeThemeButton.setOnAction(e -> {
             themeManager.toggleTheme();
@@ -82,7 +91,7 @@ public class ToolBar {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        HBox rightSide = new HBox(profileButton);
+        HBox rightSide = new HBox(profileButton, logoutButton);
         rightSide.setAlignment(Pos.CENTER_RIGHT);
 
         toolBar.getChildren().addAll(leftSide, spacer, rightSide);

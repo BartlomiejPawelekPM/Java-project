@@ -89,7 +89,6 @@ public class Rejestracja {
         registerButton.setOnMouseEntered(e -> registerButton.setStyle("-fx-background-color: #1ed760; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
         registerButton.setOnMouseExited(e -> registerButton.setStyle("-fx-background-color: #1DB954; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"));
 
-        // Obsługa rejestracji
         registerButton.setOnAction(event -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
@@ -97,21 +96,18 @@ public class Rejestracja {
 
             MSController msController = new MSController();
 
-            // Walidacja pustych pól
             if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 messageLabel.setText("Pola są puste!");
                 messageLabel.setTextFill(Color.RED);
                 return;
             }
 
-            // Walidacja, czy hasła się zgadzają
             if (!password.equals(confirmPassword)) {
                 messageLabel.setText("Hasła nie pasują!");
                 messageLabel.setTextFill(Color.RED);
                 return;
             }
 
-            // Rejestracja użytkownika
             if (MSController.register(username, password)) {
                 messageLabel.setText("Rejestracja zakończona sukcesem!");
                 messageLabel.setTextFill(Color.GREEN);
@@ -126,7 +122,6 @@ public class Rejestracja {
 
         backToLoginLink.setOnAction(event -> main.openLoginWindow());
 
-        // Ustawienie sceny
         Scene scene = new Scene(gridPane, 600, 500);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Rejestracja");

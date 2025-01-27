@@ -166,7 +166,7 @@ INSERT INTO `utwory` (`id`, `nazwa_utworu`, `data_dodania`, `tworca_id`) VALUES
 CREATE TABLE `uzytkownicy` (
   `id` int(99) NOT NULL,
   `nazwa_uzytkownika` varchar(30) NOT NULL,
-  `haslo` varchar(30) NOT NULL,
+  `haslo` varchar(255) NOT NULL,
   `permisje` int(9) NOT NULL,
   `email` varchar(30) NOT NULL,
   `zdjecie` blob DEFAULT NULL,
