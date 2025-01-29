@@ -1,7 +1,6 @@
 package com.example.logowanie;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -35,7 +34,7 @@ public class Main extends Application {
 
     public void openMainMenuWindow() {
         if (isLoggedIn) {
-            new Menuadmin(primaryStage, languageManager, themeManager, this, userId);
+            new MenuAplikacji(primaryStage, languageManager, themeManager, this, userId);
         } else {
             openLoginWindow();
         }

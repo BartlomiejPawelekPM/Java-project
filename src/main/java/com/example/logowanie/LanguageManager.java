@@ -21,6 +21,33 @@ public class LanguageManager {
     public String getText(String key) {
         String text;
         switch (key) {
+            case "add.title":
+                text = isEnglish.get() ? "Title" : "Tytuł";
+                break;
+            case "add.add":
+                text = isEnglish.get() ? "Add" : "Dodaj";
+                break;
+            case "add.cancel":
+                text = isEnglish.get() ? "Cancel" : "Anuluj";
+                break;
+            case "add.fname":
+                text = isEnglish.get() ? "First Name" : "Imię";
+                break;
+            case "add.lname":
+                text = isEnglish.get() ? "Last Name" : "Nazwisko";
+                break;
+            case "add.pseudo":
+                text = isEnglish.get() ? "Nickname" : "Pseudonim";
+                break;
+            case "add.data":
+                text = isEnglish.get() ? "Date (YYYY-MM-DD)" : "Data dodania (YYYY-MM-DD)";
+                break;
+            case "show.prev":
+                text = isEnglish.get() ? "Prev" : "Cofnij";
+                break;
+            case "show.next":
+                text = isEnglish.get() ? "Next" : "Dalej";
+                break;
             case "menu.utwory":
                 text = isEnglish.get() ? "Songs" : "Utwory";
                 break;
@@ -40,7 +67,7 @@ public class LanguageManager {
                 text = isEnglish.get() ? "Biggest Hits" : "Największe Hity";
                 break;
             case "menu.add.song":
-                text = isEnglish.get() ? "Add Song" : "Dodaj Utwór";
+                text = isEnglish.get() ? "Add new Song" : "Dodaj nowy Utwór";
                 break;
             case "menu.remove.song":
                 text = isEnglish.get() ? "Remove Song" : "Usuń Utwór";
@@ -90,5 +117,3 @@ public class LanguageManager {
         return text;
     }
 }
-
-

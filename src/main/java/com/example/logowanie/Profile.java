@@ -9,7 +9,6 @@ import javafx.scene.layout.*;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
@@ -24,10 +23,10 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javafx.scene.layout.HBox.setHgrow;
-
-import com.example.logowanie.Main;
 
 public class Profile {
     private final Stage stage;
@@ -36,6 +35,8 @@ public class Profile {
     private final Main main;
     private final int userId;
     private Label saldoLabel;
+
+    private static List<Song> purchasedSongs = new ArrayList<Song>();
 
     public Profile(Stage stage, LanguageManager languageManager, Theme themeManager, Main main, int userId) {
         this.stage = stage;
@@ -82,10 +83,44 @@ public class Profile {
         exitIcon.setContent("M4,8 L12,16 L20,8 Z");
         exitIcon.setFill(Color.WHITE);
         logoutButton.setGraphic(exitIcon);
-
         logoutButton.setOnAction(e -> main.openLoginWindow());
 
-        top.getChildren().addAll(backButton, new Wyrownaj(), logoutButton);
+        Button addFundsButton = new Button();
+        addFundsButton.setStyle(
+                "-fx-background-color: #333333; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 24px; " +
+                        "-fx-background-radius: 50%; " +
+                        "-fx-pref-width: 50px; " +
+                        "-fx-pref-height: 50px;" +
+                        "-fx-padding: 5px;"
+        );
+        SVGPath walletIcon = new SVGPath();
+        walletIcon.setContent("M4 2C2.9 2 2 2.9 2 4V16C2 17.1 2.9 18 4 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2H4ZM20 16H4V8H20V16ZM4 6H20V4H4V6Z");
+        walletIcon.setFill(Color.BROWN);
+        walletIcon.setStroke(Color.BLACK);
+        walletIcon.setStrokeWidth(2);
+        walletIcon.setScaleX(1.5);
+        walletIcon.setScaleY(1.5);
+        addFundsButton.setGraphic(walletIcon);
+        addFundsButton.setOnAction(e -> openAddFundsWindow());
+
+        Button shoppinCart = new Button();
+        shoppinCart.setStyle(
+                "-fx-background-color: #333333; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 24px; " +
+                        "-fx-background-radius: 50%; " +
+                        "-fx-pref-width: 50px; " +
+                        "-fx-pref-height: 50px;"
+        );
+        SVGPath cartIcon = new SVGPath();
+        cartIcon.setContent("M7,4C7,3.44772 7.44772,3 8,3C8.55228,3 9,3.44772 9,4C9,4.55228 8.55228,5 8,5C7.44772,5 7,4.55228 7,4ZM3,2C2.44772,2 2,2.44772 2,3V6C2,6.55228 2.44772,7 3,7H4.40698C5.26446,7 6.0408,7.50313 6.31299,8.29668L7.50125,11.2636C7.82256,12.0766 8.77634,12.5 9.77777,12.5H16.2222C17.2236,12.5 18.1774,12.0766 18.4987,11.2636L19.687,8.29668C19.9592,7.50313 20.7355,7 21.593,7H23C23.5523,7 24,6.55228 24,6V3C24,2.44772 23.5523,2 23,2H3ZM19.687,6H4.40698L5.59525,8.29668C5.86745,9.09023 6.64379,9.59333 7.50125,9.59333H16.2222C17.0797,9.59333 17.8561,9.09023 18.1283,8.29668L19.687,6Z");
+        cartIcon.setFill(Color.WHITE);
+        shoppinCart.setGraphic(cartIcon);
+        shoppinCart.setOnAction(e -> showCartWindow());
+
+        top.getChildren().addAll(backButton, new Wyrownaj(), shoppinCart,addFundsButton, logoutButton);
 
         root.setTop(top);
 
@@ -132,22 +167,62 @@ public class Profile {
                     new Label("Adres: "), adresField
             );
 
-            profileBox.getChildren().addAll(leftSection, rightSection);
-
-            Button addFundsButton = new Button("Dodaj środki");
-            addFundsButton.setStyle(
-                    "-fx-background-color: #468254; " +
+            usernameField.setStyle(
+                    "-fx-background-color: transparent; " +
+                            "-fx-border-color: #B3B3B3; " +
+                            "-fx-border-radius: 5px; " +
+                            "-fx-border-width: 2px; " +
                             "-fx-text-fill: white; " +
                             "-fx-font-size: 18px; " +
-                            "-fx-padding: 10px 20px; " +
-                            "-fx-background-radius: 8px;"
+                            "-fx-prompt-text-fill: #B3B3B3;"
             );
-            addFundsButton.setOnAction(e -> openAddFundsWindow());
+
+            emailField.setStyle(
+                    "-fx-background-color: transparent; " +
+                            "-fx-border-color: #B3B3B3; " +
+                            "-fx-border-radius: 5px; " +
+                            "-fx-border-width: 2px; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 18px; " +
+                            "-fx-prompt-text-fill: #B3B3B3;"
+            );
+
+            imieField.setStyle(
+                    "-fx-background-color: transparent; " +
+                            "-fx-border-color: #B3B3B3; " +
+                            "-fx-border-radius: 5px; " +
+                            "-fx-border-width: 2px; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 18px; " +
+                            "-fx-prompt-text-fill: #B3B3B3;"
+            );
+
+            nazwiskoField.setStyle(
+                    "-fx-background-color: transparent; " +
+                            "-fx-border-color: #B3B3B3; " +
+                            "-fx-border-radius: 5px; " +
+                            "-fx-border-width: 2px; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 18px; " +
+                            "-fx-prompt-text-fill: #B3B3B3;"
+            );
+
+            adresField.setStyle(
+                    "-fx-background-color: transparent; " +
+                            "-fx-border-color: #B3B3B3; " +
+                            "-fx-border-radius: 5px; " +
+                            "-fx-border-width: 2px; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 18px; " +
+                            "-fx-prompt-text-fill: #B3B3B3;"
+            );
+
+            profileBox.getChildren().addAll(leftSection, rightSection);
 
             VBox content = new VBox(15);
-            content.setAlignment(Pos.CENTER);
+            content.setAlignment(Pos.TOP_CENTER);
             content.setStyle("-fx-padding: 20;");
-            content.getChildren().addAll(profileLabel, profileBox, addFundsButton);
+            content.getChildren().addAll(profileBox);
 
             Button saveButton = new Button("Zapisz zmiany");
             saveButton.setStyle(
@@ -284,9 +359,46 @@ public class Profile {
 
     private void goBackToMenu() {
         try {
-            new Menuadmin(stage, languageManager, themeManager, main, userId);
+            new MenuAplikacji(stage, languageManager, themeManager, main, userId);
         } catch (Exception e) {
             showError("Error returning to menu: " + e.getMessage());
+        }
+    }
+
+    public static void showCartWindow() {
+        Stage cartStage = new Stage();
+        VBox cartContent = new VBox(10);
+        cartContent.setAlignment(Pos.CENTER);
+        cartContent.setStyle("-fx-padding: 20;");
+
+        if (purchasedSongs.isEmpty()) {
+            cartContent.getChildren().add(new Label("Koszyk jest pusty"));
+        } else {
+            for (Song song : purchasedSongs) {
+                Label songLabel = new Label(song.getTitle());
+                cartContent.getChildren().add(songLabel);
+            }
+        }
+
+        Scene cartScene = new Scene(cartContent, 300, 400);
+        cartStage.setTitle("Koszyk");
+        cartStage.setScene(cartScene);
+        cartStage.show();
+    }
+
+    public static void addToCart(Song song) {
+        purchasedSongs.add(song);
+    }
+
+    public static class Song {
+        private final String title;
+
+        public Song(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
         }
     }
 

@@ -1,8 +1,16 @@
 package com.example.logowanie;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import com.example.logowanie.Main;
 import com.example.logowanie.MSController;
@@ -14,6 +22,8 @@ import javafx.scene.text.Font;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+
 
 public class Loginy {
     public Loginy(Stage primaryStage, Main main) {
@@ -33,8 +43,26 @@ public class Loginy {
         loginButton.setPrefWidth(200);
         loginButton.setPrefHeight(50);
 
-        usernameField.setStyle("-fx-font-size: 18px; -fx-text-fill: #B3B3B3;");
-        passwordField.setStyle("-fx-font-size: 18px; -fx-text-fill: #B3B3B3;");
+        usernameField.setStyle(
+                "-fx-background-color: transparent; " +
+                        "-fx-border-color: #B3B3B3; " +
+                        "-fx-border-radius: 5px; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 18px; " +
+                        "-fx-prompt-text-fill: #B3B3B3;"
+        );
+
+        passwordField.setStyle(
+                "-fx-background-color: transparent; " +
+                        "-fx-border-color: #B3B3B3; " +
+                        "-fx-border-radius: 5px; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 18px; " +
+                        "-fx-prompt-text-fill: #B3B3B3;"
+        );
+
         loginButton.setStyle("-fx-background-color: #1DB954; -fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;");
         registerLink.setStyle("-fx-font-size: 16px; -fx-text-fill: white; -fx-underline: true;");
         registerLink.setFont(new Font("Arial", 12));
@@ -42,8 +70,53 @@ public class Loginy {
         usernameField.setPromptText("Login");
         passwordField.setPromptText("Hasło");
 
-        usernameField.setStyle("-fx-prompt-text-fill: #B3B3B3;");
-        passwordField.setStyle("-fx-prompt-text-fill: #B3B3B3;");
+        usernameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                usernameField.setStyle(
+                        "-fx-background-color: transparent; " +
+                                "-fx-border-color: #1DB954; " +
+                                "-fx-border-radius: 5px; " +
+                                "-fx-border-width: 2px; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-font-size: 18px; " +
+                                "-fx-prompt-text-fill: #B3B3B3;"
+                );
+            } else {
+                usernameField.setStyle(
+                        "-fx-background-color: transparent; " +
+                                "-fx-border-color: #B3B3B3; " +
+                                "-fx-border-radius: 5px; " +
+                                "-fx-border-width: 2px; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-font-size: 18px; " +
+                                "-fx-prompt-text-fill: #B3B3B3;"
+                );
+            }
+        });
+
+        passwordField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                passwordField.setStyle(
+                        "-fx-background-color: transparent; " +
+                                "-fx-border-color: #1DB954; " +
+                                "-fx-border-radius: 5px; " +
+                                "-fx-border-width: 2px; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-font-size: 18px; " +
+                                "-fx-prompt-text-fill: #B3B3B3;"
+                );
+            } else {
+                passwordField.setStyle(
+                        "-fx-background-color: transparent; " +
+                                "-fx-border-color: #B3B3B3; " +
+                                "-fx-border-radius: 5px; " +
+                                "-fx-border-width: 2px; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-font-size: 18px; " +
+                                "-fx-prompt-text-fill: #B3B3B3;"
+                );
+            }
+        });
 
         GridPane gridPane = new GridPane();
         gridPane.setVgap(10);
@@ -58,12 +131,47 @@ public class Loginy {
         ImageView logoView = new ImageView(Logo.getLogoImage());
         logoView.setPreserveRatio(true);
 
+        Circle clip = new Circle(50, 50, 50);
+        logoView.setClip(clip);
+
+        logoView.setFitWidth(100);
+        logoView.setFitHeight(100);
+
+        RotateTransition rotateTransition = new RotateTransition();
+        rotateTransition.setNode(logoView);
+        rotateTransition.setCycleCount(RotateTransition.INDEFINITE);
+        rotateTransition.setInterpolator(javafx.animation.Interpolator.LINEAR);
+        rotateTransition.setFromAngle(0);
+        rotateTransition.setToAngle(360);
+        rotateTransition.setRate(0.3);
+        rotateTransition.setDuration(Duration.seconds(5));
+
+        rotateTransition.play();
+
+        Glow glowEffect = new Glow(0.0);
+        logoView.setEffect(glowEffect);
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(glowEffect.levelProperty(), 0.0)),
+                new KeyFrame(Duration.seconds(1), new KeyValue(glowEffect.levelProperty(), 0.8)),
+                new KeyFrame(Duration.seconds(2), new KeyValue(glowEffect.levelProperty(), 0.0))
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setAutoReverse(true);
+        timeline.play();
+
+        logoBox.setStyle("-fx-background-color: #468254; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 18px; " +
+                "-fx-padding: 10px 20px; " +
+                "-fx-background-radius: 8px;");
+
         Text NaszaMarka = new Text("JBTSound");
         NaszaMarka.setFont(new Font("Arial", 20));
         NaszaMarka.setFill(Color.web("#1DB954"));
 
-        double logoWidth = NaszaMarka.getBoundsInLocal().getWidth();
-        logoView.setFitWidth(logoWidth);
+        NaszaMarka.setStroke(Color.BLACK);
+        NaszaMarka.setStrokeWidth(2);
 
         logoBox.getChildren().addAll(logoView, NaszaMarka);
         gridPane.add(logoBox, 1, 0);
@@ -74,33 +182,7 @@ public class Loginy {
         passwordStackPane.setPrefWidth(300);
         passwordStackPane.setPrefHeight(40);
 
-        final Image[] eyeImage = {new Image(getClass().getResourceAsStream("/eye.png"))};
-        ImageView eyeImageView = new ImageView(eyeImage[0]);
-        eyeImageView.setFitWidth(40);
-        eyeImageView.setFitHeight(30);
-
-        Button togglePasswordVisibilityButton = new Button();
-        togglePasswordVisibilityButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0;");
-        togglePasswordVisibilityButton.setGraphic(eyeImageView);
-
-        boolean[] passwordVisible = {false};
-
-        togglePasswordVisibilityButton.setOnAction(event -> {
-            if (passwordVisible[0]) {
-                passwordField.setText(passwordField.getText().replaceAll(".", "•"));
-                passwordVisible[0] = false;
-                eyeImage[0] = new Image(getClass().getResourceAsStream("/blindeye.png"));
-                eyeImageView.setImage(eyeImage[0]);
-            } else {
-                passwordField.setText(passwordField.getText().replaceAll("•", ""));
-                passwordVisible[0] = true;
-                eyeImage[0] = new Image(getClass().getResourceAsStream("/eye.png"));
-                eyeImageView.setImage(eyeImage[0]);
-            }
-        });
-
-        passwordStackPane.getChildren().addAll(passwordField, togglePasswordVisibilityButton);
-        StackPane.setAlignment(togglePasswordVisibilityButton, Pos.CENTER_RIGHT);
+        passwordStackPane.getChildren().addAll(passwordField);
 
         gridPane.add(passwordStackPane, 1, 2);
 

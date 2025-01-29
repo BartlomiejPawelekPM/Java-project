@@ -108,4 +108,48 @@ public class MSController {
         }
         return -1;
     }
+
+    public static int getUserPermissions(int userId) {
+        String query = "SELECT permisje FROM uzytkownicy WHERE id = ?";
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int permissions = resultSet.getInt("permisje");
+                    System.out.println("Uprawnienia dla użytkownika o ID " + userId + ": " + permissions);
+                    return permissions;
+                } else {
+                    System.out.println("Nie znaleziono użytkownika o ID: " + userId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Błąd podczas pobierania uprawnień użytkownika:");
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public static boolean addToCart(int userId, int plytaId) {
+        // SQL query to insert the selected album into the user's cart (posiadane_plyty table)
+        String query = "INSERT INTO posiadane_plyty (uzytkownik_id, plyta_id) VALUES (?, ?)";
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, userId); // Setting the logged-in user's ID
+            statement.setInt(2, plytaId); // Setting the ID of the album the user wants to add to their cart
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Płyta dodana do koszyka!");
+                return true;
+            } else {
+                System.out.println("Błąd podczas dodawania płyty do koszyka.");
+            }
+        } catch (SQLException e) {
+            logger.error("Błąd podczas dodawania płyty do koszyka: ", e);
+        }
+        return false;
+    }
 }
